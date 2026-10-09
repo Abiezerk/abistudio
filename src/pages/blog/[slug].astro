@@ -1,0 +1,97 @@
+---
+import Base from '../../layouts/Base.astro';
+import Media from '../../components/Media.astro';
+import Icon from '../../components/Icon.astro';
+import { render } from 'astro:content';
+import { SITE, waLink } from '../../config';
+import { getPosts, minutos, type Post } from '../../lib/blog';
+import { youtubeId } from '../../data/contenido';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props as { post: Post };
+const { Content } = await render(post);
+const { titulo, descripcion, categoria, fecha, portada, youtube } = post.data;
+const yt = youtubeId(youtube);
+const fechaTxt = fecha.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: titulo,
+  description: descripcion,
+  datePublished: fecha.toISOString(),
+  author: { '@type': 'Person', name: SITE.brand },
+  publisher: { '@type': 'Organization', name: SITE.brand },
+  mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).toString(),
+  inLanguage: 'es-MX',
+  ...(yt ? { video: { '@type': 'VideoObject', name: titulo, description: descripcion, thumbnailUrl: `https://i.ytimg.com/vi/${yt}/hqdefault.jpg`, embedUrl: `https://www.youtube.com/embed/${yt}`, uploadDate: fecha.toISOString() } } : {}),
+};
+---
+<Base title={titulo} description={descripcion} schema={schema} type="article">
+  <article class="post">
+    <header class="container post-head">
+      <a href="/blog/" class="mono back"><Icon name="back" size={14} /> Blog</a>
+      <span class="eyebrow">{categoria} · {minutos(post)} min de lectura</span>
+      <h1 class="display" data-reveal>{titulo}</h1>
+      <p class="lead">{descripcion}</p>
+      <time class="mono" datetime={fecha.toISOString()}>{fechaTxt}</time>
+    </header>
+
+    <div class="container cover-wrap">
+      {yt ? (
+        <div class="media cover video" data-reveal>
+          <iframe src={`https://www.youtube-nocookie.com/embed/${yt}?rel=0`} title={titulo} loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>
+        </div>
+      ) : (
+        <div class="media cover" data-clip><Media name={portada} alt={titulo} sizes="(max-width: 960px) 100vw, 960px" eager label="[Portada del artículo]" /></div>
+      )}
+    </div>
+
+    <div class="container prose">
+      <Content />
+    </div>
+
+    <aside class="container post-cta">
+      <div>
+        <h2 class="h3">¿Tienes un proyecto en mente?</h2>
+        <p>Cuéntame tu idea y te envío una propuesta en menos de 24 horas.</p>
+      </div>
+      <a href={waLink()} class="btn btn-primary" target="_blank" rel="noopener"><Icon name="chat" />WhatsApp</a>
+    </aside>
+  </article>
+</Base>
+
+<style>
+  .post-head { max-width: 860px; padding-top: 72px; display: flex; flex-direction: column; gap: 16px; }
+  .back { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; min-height: 44px; margin-bottom: 8px; }
+  .post-head h1 { font-size: clamp(38px, 5.6vw, 76px); line-height: 1.02; }
+  .post-head .lead { max-width: 680px; font-size: 18px; }
+  .cover-wrap { max-width: 1060px; margin-top: 40px; }
+  .cover { height: clamp(240px, 45vw, 520px); }
+  .cover.video { height: auto; aspect-ratio: 16 / 9; }
+  .cover iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .cover :global(img), .cover :global(.ph) { width: 100%; height: 100%; object-fit: cover; }
+  .prose { max-width: 760px; padding-top: 48px; padding-bottom: 64px; font-size: 18px; line-height: 1.7; color: #D9D4CC; }
+  .prose :global(h2) { font-family: var(--f-display); font-weight: 400; font-size: 38px; line-height: 1.1; color: var(--text); margin: 48px 0 12px; }
+  .prose :global(h3) { font-size: 20px; color: var(--text); margin: 32px 0 8px; }
+  .prose :global(p), .prose :global(ul), .prose :global(ol) { margin: 0 0 20px; }
+  .prose :global(li) { margin-bottom: 8px; }
+  .prose :global(strong) { color: var(--text); }
+  .prose :global(a) { color: var(--accent); }
+  .prose :global(img) { width: 100%; height: auto; border-radius: 6px; margin: 12px 0; }
+  .prose :global(iframe) { width: 100%; aspect-ratio: 16 / 9; height: auto; border: 0; border-radius: 6px; }
+  .prose :global(blockquote) { margin: 32px 0; padding-left: 20px; border-left: 2px solid var(--accent); font-family: var(--f-display); font-size: 26px; line-height: 1.3; color: var(--text); }
+  .post-cta { max-width: 760px; margin-bottom: 120px; padding: 32px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg-2); display: flex; flex-wrap: wrap; gap: 20px; align-items: center; justify-content: space-between; }
+  .post-cta p { margin: 8px 0 0; color: var(--muted); }
+  @media (max-width: 760px) {
+    .post-head { padding-top: 24px; }
+    .prose { font-size: 17px; padding-top: 32px; }
+    .prose :global(h2) { font-size: 30px; margin-top: 36px; }
+    .post-cta { margin: 0 var(--gutter) 56px; padding: 24px 20px; }
+    .post-cta .btn { width: 100%; }
+  }
+</style>

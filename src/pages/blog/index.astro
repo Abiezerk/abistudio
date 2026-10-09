@@ -1,0 +1,121 @@
+---
+import Base from '../../layouts/Base.astro';
+import Media from '../../components/Media.astro';
+import { SITE } from '../../config';
+import { getPosts, minutos } from '../../lib/blog';
+import { findImage } from '../../lib/media';
+import { youtubeId } from '../../data/contenido';
+
+const posts = (await getPosts()).map((p) => {
+  const yt = youtubeId(p.data.youtube);
+  return {
+    url: `/blog/${p.id}/`,
+    frontmatter: {
+      title: p.data.titulo, description: p.data.descripcion, categoria: p.data.categoria,
+      minutos: minutos(p), portada: p.data.portada, destacado: p.data.destacado,
+      ytThumb: !findImage(p.data.portada) && yt ? `https://i.ytimg.com/vi/${yt}/hqdefault.jpg` : '',
+    },
+  };
+});
+const feat = posts.find((p) => p.frontmatter.destacado) ?? posts[0];
+const rest = posts.filter((p) => p !== feat);
+const cats = ['Todos', 'Fotografía', 'Drone y FPV', 'Guías y precios'];
+---
+<Base title="Blog" description={`Guías, precios y consejos sobre fotografía, drone y FPV en ${SITE.city}.`}>
+  <section class="container intro">
+    <span class="eyebrow">Blog</span>
+    <div class="intro-row">
+      <h1 class="display h1" data-reveal>Guías, consejos y <em>detrás de cámara</em></h1>
+      <p class="lead">Todo lo que conviene saber antes de una sesión de fotos o un vuelo con drone.</p>
+    </div>
+    <div class="pills" role="group" aria-label="Filtrar artículos">
+      {cats.map((c, i) => <button type="button" aria-pressed={i === 0 ? 'true' : 'false'} data-cat={c}>{c}</button>)}
+    </div>
+  </section>
+
+  {feat && (
+    <section class="container" data-feat data-cat-item={feat.frontmatter.categoria}>
+      <a href={feat.url} class="feat zoom" data-reveal>
+        <div class="media feat-media">{feat.frontmatter.ytThumb ? <img src={feat.frontmatter.ytThumb} alt={feat.frontmatter.title} loading="lazy" /> : <Media name={feat.frontmatter.portada} alt={feat.frontmatter.title} sizes="(max-width: 760px) 100vw, 60vw" label="[Portada del artículo]" />}<span class="badge only-mobile">Destacado</span></div>
+        <div class="feat-body">
+          <span class="mono"><span class="badge only-desktop">Destacado</span>{feat.frontmatter.categoria} · {feat.frontmatter.minutos} min</span>
+          <h2 class="display">{feat.frontmatter.title}</h2>
+          <p>{feat.frontmatter.description}</p>
+          <span class="link-accent">Leer artículo →</span>
+        </div>
+      </a>
+    </section>
+  )}
+
+  <section class="container list-wrap">
+    <div class="list" data-stagger>
+      {rest.map((p) => (
+        <a href={p.url} class="card zoom" data-cat-item={p.frontmatter.categoria}>
+          <div class="media card-media">{p.frontmatter.ytThumb ? <img src={p.frontmatter.ytThumb} alt={p.frontmatter.title} loading="lazy" /> : <Media name={p.frontmatter.portada} alt={p.frontmatter.title} sizes="(max-width: 760px) 104px, 33vw" label="[Portada]" />}</div>
+          <div class="card-body">
+            <span class="mono"><span class="accent">{p.frontmatter.categoria}</span> · {p.frontmatter.minutos} min</span>
+            <h3 class="display">{p.frontmatter.title}</h3>
+            <p class="only-desktop">{p.frontmatter.description}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="cta-band">
+    <div class="container">
+      <h2 class="h2" style="max-width:720px;font-size:clamp(30px,4vw,56px)">¿Tienes una duda que no está aquí? Pregúntame.</h2>
+      <div class="actions" style="display:flex"><a href="/contacto/" class="btn btn-primary">Escríbeme</a></div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .intro { padding-top: 96px; padding-bottom: 48px; }
+  .intro-row { display: flex; flex-wrap: wrap; gap: 24px 32px; align-items: flex-end; justify-content: space-between; margin: 20px 0 48px; }
+  .intro-row .h1 { font-size: clamp(42px, 7vw, 108px); }
+  .feat { display: flex; flex-wrap: wrap; border: 1px solid #2A2D30; border-radius: 6px; overflow: hidden; background: var(--card); text-decoration: none; margin-bottom: 24px; }
+  .feat-media { flex: 999 1 560px; min-height: 440px; border-radius: 0; }
+  .feat-media :global(img), .feat-media :global(.ph) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .feat-body { flex: 1 1 380px; padding: 48px; display: flex; flex-direction: column; gap: 18px; justify-content: center; }
+  .feat-body h2 { font-size: 46px; line-height: 1.05; }
+  .feat-body p { margin: 0; color: var(--muted); font-size: 17px; }
+  .badge { font-family: var(--f-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; padding: 6px 10px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); margin-right: 12px; }
+  .feat-media .badge { position: absolute; top: 12px; left: 12px; z-index: 2; }
+  .list-wrap { padding-top: 24px; padding-bottom: 120px; }
+  .list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 40px 24px; }
+  .card { display: flex; flex-direction: column; gap: 16px; text-decoration: none; }
+  .card-media { height: 240px; border-radius: 6px; }
+  .card-media :global(img), .card-media :global(.ph) { width: 100%; height: 100%; object-fit: cover; }
+  .card-body { display: flex; flex-direction: column; gap: 12px; }
+  .card h3 { font-size: 30px; line-height: 1.1; }
+  .card p { margin: 0; color: var(--muted); font-size: 15px; }
+  [hidden] { display: none !important; }
+
+  @media (max-width: 760px) {
+    .intro { padding-top: 32px; padding-bottom: 20px; }
+    .intro-row { display: block; margin: 10px 0 20px; }
+    .intro-row .h1 { font-size: 44px; margin-bottom: 10px; }
+    .feat { border-radius: 10px; margin-bottom: 8px; }
+    .feat-media { min-height: 220px; flex-basis: 100%; }
+    .feat-body { padding: 20px; gap: 10px; }
+    .feat-body h2 { font-size: 30px; }
+    .feat-body p { font-size: 15px; }
+    .list-wrap { padding-top: 8px; padding-bottom: 48px; }
+    .list { display: flex; flex-direction: column; gap: 0; }
+    .card { flex-direction: row; gap: 14px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+    .card-media { flex: none; width: 104px; height: 104px; }
+    .card-body { gap: 6px; min-width: 0; }
+    .card h3 { font-size: 21px; line-height: 1.15; }
+    .card-media :global(.ph-label) { font-size: 8px; }
+  }
+</style>
+
+<script>
+  const btns = document.querySelectorAll<HTMLButtonElement>('[data-cat]');
+  btns.forEach((b) => b.addEventListener('click', () => {
+    const c = b.dataset.cat!;
+    btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    document.querySelectorAll<HTMLElement>('[data-cat-item]').forEach((el) => { el.hidden = c !== 'Todos' && el.dataset.catItem !== c; });
+  }));
+</script>

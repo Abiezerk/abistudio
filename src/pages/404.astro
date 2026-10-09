@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Página no encontrada">
+  <section class="container" style="padding:120px var(--gutter) 160px;max-width:900px">
+    <span class="eyebrow">Error 404</span>
+    <h1 class="display h1" style="margin:20px 0 24px">Esta toma <em>no existe</em></h1>
+    <p class="lead" style="margin-bottom:32px">La página que buscas se movió o nunca existió. Puedes volver al inicio o ver el portafolio.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:12px">
+      <a href="/" class="btn btn-primary">Ir al inicio</a>
+      <a href="/portafolio/" class="btn btn-ghost">Ver portafolio</a>
+    </div>
+  </section>
+</Base>

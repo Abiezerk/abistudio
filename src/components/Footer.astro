@@ -1,0 +1,17 @@
+---
+import { SITE, SOCIALS } from '../config';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="container">
+    <span>© {year} {SITE.brand} · Fotografía, drone y FPV</span>
+    {SOCIALS.length > 0 ? (
+      <div class="socials">
+        {SOCIALS.map((s) => <a href={s.href} target="_blank" rel="noopener">{s.label}</a>)}
+      </div>
+    ) : (
+      <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+    )}
+    <span class="mono">{SITE.zone}</span>
+  </div>
+</footer>

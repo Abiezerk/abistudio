@@ -1,0 +1,54 @@
+[
+  {
+    "nombre": "Fotografía",
+    "resumen": "Modelaje, producto, paisajes y mascotas.",
+    "descripcion": "Sesiones de modelaje, foto de producto, paisajes y retratos de mascotas, en estudio o en exteriores.",
+    "ideal_para": "modelos, marcas, emprendedores y dueños de mascotas.",
+    "incluye": ["[N] fotos editadas", "Sesión de [N] horas", "Dirección de poses y estilo", "Galería privada para descargar"],
+    "precio": "[PRECIO]",
+    "foto": "",
+    "video": "",
+    "linea": "Fotografía",
+    "destacado": false,
+    "mensaje_whatsapp": "Hola, quiero cotizar una sesión de fotografía."
+  },
+  {
+    "nombre": "Aéreo clásico",
+    "resumen": "Fotos y video estable desde altura.",
+    "descripcion": "Fotos y video estable desde altura que muestran el lugar completo y todo lo que lo rodea.",
+    "ideal_para": "inmobiliarias, terrenos, hoteles y desarrollos.",
+    "incluye": ["[N] fotos aéreas editadas", "Video aéreo de [N] min", "Versión vertical para redes", "Licencia de uso comercial"],
+    "precio": "[PRECIO]",
+    "foto": "",
+    "video": "",
+    "linea": "Aéreo y FPV",
+    "destacado": false,
+    "mensaje_whatsapp": "Hola, me interesa una sesión de fotos y video aéreo."
+  },
+  {
+    "nombre": "Recorrido FPV",
+    "resumen": "Una sola toma, por dentro y por fuera.",
+    "descripcion": "Un video de una sola toma que entra, recorre y sale del lugar sin cortes. La forma más inmersiva de mostrar un espacio.",
+    "ideal_para": "casas en venta, restaurantes, hoteles, gimnasios y negocios.",
+    "incluye": ["Planeación de la ruta", "Recorrido interior y exterior", "Versión vertical para Reels", "Música con licencia"],
+    "precio": "[PRECIO]",
+    "foto": "",
+    "video": "",
+    "linea": "Aéreo y FPV",
+    "destacado": true,
+    "mensaje_whatsapp": "Hola, me interesa un recorrido FPV."
+  },
+  {
+    "nombre": "Acción FPV",
+    "resumen": "Tomas rápidas que siguen la acción.",
+    "descripcion": "Tomas rápidas y cercanas que siguen la acción y le dan energía a tu video.",
+    "ideal_para": "marcas, autos y motos, deportes y videoclips.",
+    "incluye": ["Planeación de tomas", "Seguimiento a alta velocidad", "Edición dinámica para redes", "Formatos horizontal y vertical"],
+    "precio": "[PRECIO]",
+    "foto": "",
+    "video": "",
+    "linea": "Aéreo y FPV",
+    "destacado": false,
+    "mensaje_whatsapp": "Hola, me interesa un video de acción FPV."
+  }
+]

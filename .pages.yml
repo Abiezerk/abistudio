@@ -1,0 +1,330 @@
+# ─────────────────────────────────────────────────────────────
+#  Panel de administración (Pages CMS)
+#  Entra en https://app.pagescms.org con tu cuenta de GitHub,
+#  abre el repositorio "abistudio" y edita todo desde formularios.
+#  Cada vez que guardas, la web se actualiza sola en 1–2 minutos.
+# ─────────────────────────────────────────────────────────────
+
+media:
+  - name: fotos
+    label: Fotos
+    input: src/assets/fotos
+    output: /src/assets/fotos
+    categories: [image]
+    rename: safe
+  - name: videos
+    label: Videos cortos (máx. 25 MB)
+    input: public/videos
+    output: /videos
+    categories: [video]
+    rename: safe
+  - name: blog
+    label: Imágenes dentro de artículos
+    input: public/blog
+    output: /blog
+    categories: [image]
+    rename: safe
+
+content:
+  # ── PORTAFOLIO ──────────────────────────────────────────────
+  - name: portafolio
+    label: Portafolio (fotos y vuelos)
+    type: file
+    path: src/data/portafolio.json
+    format: json
+    list: true
+    fields:
+      - name: foto
+        label: Foto
+        type: image
+        description: En videos, sube aquí una foto o captura del video para la miniatura.
+        options:
+          media: fotos
+      - name: descripcion
+        label: Descripción
+        type: string
+        required: true
+        description: "Describe la toma con detalle. Google la usa para mostrarte en búsquedas. Ej: Recorrido FPV por restaurante en Tijuana"
+      - name: linea
+        label: Tipo de trabajo
+        type: select
+        default: Fotografía
+        options:
+          values: [Fotografía, Aéreo y FPV]
+      - name: tema
+        label: Categoría
+        type: select
+        description: "Fotografía: Modelaje, Comercial, Paisajes o Mascotas. Aéreo y FPV: Bienes raíces, Recorridos FPV, Acción FPV o Paisajes aéreos."
+        options:
+          values: [Modelaje, Comercial, Paisajes, Mascotas, Bienes raíces, Recorridos FPV, Acción FPV, Paisajes aéreos]
+      - name: youtube
+        label: Video de YouTube (opcional)
+        type: string
+        description: Pega el enlace del video de YouTube. Al tocar la foto se reproduce.
+      - name: video
+        label: Video corto (opcional)
+        type: file
+        description: Clip corto en .mp4 de menos de 25 MB. Para videos largos usa YouTube.
+        options:
+          media: videos
+      - name: inicio
+        label: Mostrar en el inicio
+        type: boolean
+        default: false
+        description: Se muestran hasta 4 de Fotografía y 4 de Aéreo y FPV.
+
+  # ── SERVICIOS ───────────────────────────────────────────────
+  - name: servicios
+    label: Servicios
+    type: file
+    path: src/data/servicios.json
+    format: json
+    list: true
+    fields:
+      - name: nombre
+        label: Nombre del servicio
+        type: string
+        required: true
+      - name: resumen
+        label: Resumen (una línea)
+        type: string
+        description: Aparece en la lista de servicios del celular.
+      - name: descripcion
+        label: Descripción
+        type: text
+      - name: ideal_para
+        label: Ideal para
+        type: string
+        description: "Ej: casas en venta, restaurantes, hoteles y negocios."
+      - name: incluye
+        label: Qué incluye
+        type: string
+        list: true
+      - name: precio
+        label: Precio desde
+        type: string
+        description: "Ej: $2,500 MXN. Si lo dejas vacío, no se muestra precio."
+      - name: foto
+        label: Foto
+        type: image
+        options:
+          media: fotos
+      - name: video
+        label: Video corto (opcional)
+        type: file
+        description: Clip .mp4 de menos de 25 MB, sin audio. Se reproduce al abrir el servicio.
+        options:
+          media: videos
+      - name: linea
+        label: '"Ver ejemplos" lleva a'
+        type: select
+        default: Fotografía
+        options:
+          values: [Fotografía, Aéreo y FPV]
+      - name: destacado
+        label: Marcar como "El más pedido"
+        type: boolean
+        default: false
+      - name: mensaje_whatsapp
+        label: Mensaje de WhatsApp al cotizar
+        type: string
+
+  # ── CASOS ───────────────────────────────────────────────────
+  - name: casos
+    label: Casos (proyectos reales)
+    type: file
+    path: src/data/casos.json
+    format: json
+    list: true
+    fields:
+      - name: titulo
+        label: Título del proyecto
+        type: string
+        required: true
+      - name: cliente
+        label: Cliente
+        type: string
+      - name: ciudad
+        label: Ciudad
+        type: string
+      - name: tipo
+        label: Servicio
+        type: select
+        options:
+          values: [Fotografía, Fotografía comercial, Aéreo clásico, Recorrido FPV, Acción FPV]
+      - name: foto
+        label: Foto principal
+        type: image
+        options:
+          media: fotos
+      - name: detalles
+        label: Fotos de detalle (hasta 2)
+        type: image
+        options:
+          media: fotos
+          multiple:
+            max: 2
+      - name: youtube
+        label: Video de YouTube (opcional)
+        type: string
+      - name: reto
+        label: El reto
+        type: text
+        description: Qué necesitaba el cliente.
+      - name: lo_que_hice
+        label: Lo que hice
+        type: text
+      - name: resultado
+        label: El resultado
+        type: text
+        description: "Un dato real: vistas, ventas, reservaciones o mensajes recibidos."
+      - name: destacar_en_inicio
+        label: Mostrar en el inicio
+        type: boolean
+        default: false
+
+  # ── TESTIMONIOS ─────────────────────────────────────────────
+  - name: testimonios
+    label: Testimonios
+    type: file
+    path: src/data/testimonios.json
+    format: json
+    list: true
+    fields:
+      - name: testimonio
+        label: Testimonio
+        type: text
+        required: true
+        description: El primero de la lista es el que aparece en el inicio.
+      - name: nombre
+        label: Nombre
+        type: string
+      - name: empresa
+        label: Empresa (opcional)
+        type: string
+
+  # ── BLOG ────────────────────────────────────────────────────
+  - name: blog
+    label: Blog
+    type: collection
+    path: src/content/blog
+    format: yaml-frontmatter
+    filename: "{primary}.md"
+    view:
+      primary: titulo
+      fields: [titulo, categoria, fecha, borrador]
+      sort: fecha
+      order: desc
+    fields:
+      - name: titulo
+        label: Título
+        type: string
+        required: true
+      - name: descripcion
+        label: Descripción corta
+        type: text
+        description: Aparece en Google y en la lista del blog (1–2 líneas).
+      - name: categoria
+        label: Categoría
+        type: select
+        default: Fotografía
+        options:
+          values: [Fotografía, Drone y FPV, Guías y precios]
+      - name: fecha
+        label: Fecha
+        type: date
+      - name: portada
+        label: Foto de portada
+        type: image
+        options:
+          media: fotos
+      - name: youtube
+        label: Video de YouTube (opcional)
+        type: string
+        description: Si pones un video, aparece arriba en lugar de la foto de portada.
+      - name: destacado
+        label: Artículo destacado
+        type: boolean
+        default: false
+      - name: borrador
+        label: Borrador (no publicar todavía)
+        type: boolean
+        default: false
+      - name: body
+        label: Contenido
+        type: rich-text
+        options:
+          format: markdown
+          media: blog
+
+  # ── DATOS DEL SITIO ─────────────────────────────────────────
+  - name: sitio
+    label: Datos del sitio
+    type: file
+    path: src/data/sitio.json
+    format: json
+    fields:
+      - name: marca
+        label: Nombre de la marca
+        type: string
+      - name: descripcion
+        label: Descripción para Google
+        type: text
+      - name: ciudad
+        label: Ciudad
+        type: string
+      - name: zona
+        label: Zona de trabajo
+        type: string
+        description: "Ej: Tijuana y alrededores"
+      - name: estado
+        label: Estado
+        type: string
+      - name: whatsapp
+        label: WhatsApp
+        type: string
+        description: 52 + tus 10 dígitos, sin espacios.
+      - name: telefono
+        label: Teléfono (como se muestra)
+        type: string
+      - name: correo
+        label: Correo
+        type: string
+      - name: instagram
+        label: Instagram (enlace completo)
+        type: string
+      - name: youtube
+        label: YouTube (enlace completo)
+        type: string
+      - name: tiktok
+        label: TikTok (enlace completo)
+        type: string
+      - name: web3forms
+        label: Clave de Web3Forms
+        type: string
+      - name: portada_foto
+        label: Foto de portada del inicio
+        type: image
+        options:
+          media: fotos
+      - name: portada_video
+        label: Video de portada del inicio (opcional)
+        type: file
+        description: Clip de 10–15 s, sin audio, de menos de 8 MB. Si lo pones, se usa en lugar de la foto.
+        options:
+          media: videos
+
+  # ── PREGUNTAS FRECUENTES ────────────────────────────────────
+  - name: preguntas
+    label: Preguntas frecuentes
+    type: file
+    path: src/data/preguntas.json
+    format: json
+    list: true
+    fields:
+      - name: pregunta
+        label: Pregunta
+        type: string
+      - name: respuesta
+        label: Respuesta
+        type: text

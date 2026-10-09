@@ -1,0 +1,270 @@
+---
+import Base from '../layouts/Base.astro';
+import Media from '../components/Media.astro';
+import Icon from '../components/Icon.astro';
+import { SITE, SOCIALS, HAS_CASES, waLink } from '../config';
+import { INICIO, CASO_INICIO, TESTIMONIOS } from '../data/contenido';
+
+// Portada: foto y video se eligen en el panel → "Datos del sitio".
+const VIDEO_PORTADA = SITE.heroVideo;
+
+const foto = INICIO.foto;
+const aire = INICIO.aire;
+// Acomodo del mosaico según cuántas tomas haya (1 a 4)
+const LAYOUTS: Record<number, string[]> = { 1: ['full'], 2: ['big', 'big'], 3: ['big', 'tall', 'tall'], 4: ['big', '', '', 'wide'] };
+const LAYOUTS_AIRE: Record<number, string[]> = { 1: ['full'], 2: ['big', 'big'], 3: ['tall', 'tall', 'big'], 4: ['', '', 'big', 'wide'] };
+const layout = LAYOUTS[foto.length] ?? [];
+const layoutAire = LAYOUTS_AIRE[aire.length] ?? [];
+const caso = CASO_INICIO;
+const testimonio = TESTIMONIOS[0];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: SITE.brand,
+  description: SITE.description,
+  url: Astro.site?.toString(),
+  telephone: SITE.phone,
+  email: SITE.email,
+  image: new URL('/og.png', Astro.site).toString(),
+  address: { '@type': 'PostalAddress', addressLocality: SITE.city, addressRegion: SITE.region, addressCountry: SITE.country },
+  areaServed: SITE.city,
+  ...(SOCIALS.length ? { sameAs: SOCIALS.map((s) => s.href) } : {}),
+  knowsAbout: ['Fotografía de modelaje', 'Fotografía de producto', 'Fotografía de mascotas', 'Fotografía aérea con drone', 'Video FPV'],
+};
+---
+<Base title={`Fotografía, drone y FPV en ${SITE.city}`} overlayHeader schema={schema}>
+
+  <!-- PORTADA -->
+  <section class="hero">
+    <div class="hero-media kb">
+      {VIDEO_PORTADA ? (
+        <video src={VIDEO_PORTADA} autoplay muted loop playsinline preload="metadata" poster={undefined} aria-hidden="true"></video>
+      ) : (
+        <Media name={SITE.heroImage} alt="Toma destacada del portafolio de Abi Studio" label="[Video o foto de portada]" eager sizes="100vw" widths={[800, 1280, 1920, 2560]} />
+      )}
+    </div>
+    <div class="hero-shade"></div>
+    <span class="corner tl"></span><span class="corner tr"></span>
+    <span class="corner bl only-desktop"></span><span class="corner br only-desktop"></span>
+    <div class="container hero-content">
+      <span class="eyebrow fade-in" style="animation-delay:.1s">Fotografía · Drone · FPV</span>
+      <h1 class="display h1 lines">
+        <span class="ln"><span>La perspectiva que</span></span>
+        <span class="ln"><span><em>nadie más</em> ve.</span></span>
+      </h1>
+      <div class="hero-foot fade-in">
+        <p class="lead only-desktop">Fotografía de modelaje, producto, paisajes y mascotas. Y desde el aire, tomas y recorridos FPV.</p>
+        <div class="hero-actions">
+          <a href="#trabajo" class="btn btn-primary">Ver mi trabajo</a>
+          <a href={waLink()} class="btn btn-ghost hero-ghost" target="_blank" rel="noopener"><Icon name="chat" class="accent" />WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ESCRITORIO: dos selecciones -->
+  <div id="trabajo"></div>
+  <section class="section only-desktop">
+    <div class="container">
+      <div class="head" data-reveal>
+        <div><span class="eyebrow">01 — Fotografía</span><h2 class="h2">Retrato, producto y <em>naturaleza</em></h2></div>
+        <a href="/portafolio/" class="link">Ver toda la fotografía →</a>
+      </div>
+      <div class="mosaic" data-stagger>
+        {foto.map((p, i) => (
+          <a href="/portafolio/" class={`media zoom ${layout[i]}`}>
+            <Media name={p.foto} alt={p.alt} sizes="(max-width: 1200px) 50vw, 680px" />
+            <span class="tag">{p.tema}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section only-desktop">
+    <div class="container">
+      <div class="head" data-reveal>
+        <div><span class="eyebrow">02 — Aéreo y FPV</span><h2 class="h2">Desde el aire, <em>sin cortes</em></h2></div>
+        <a href="/portafolio/?linea=aire" class="link">Ver todo lo aéreo →</a>
+      </div>
+      <div class="mosaic" data-stagger>
+        {aire.map((p, i) => (
+          <a href="/portafolio/?linea=aire" class={`media zoom ${layoutAire[i]}`}>
+            <Media name={p.foto} alt={p.alt} sizes="(max-width: 1200px) 50vw, 680px" />
+            <span class="tag">{p.tema}</span>
+            {p.esVideo && <span class="play accent"><Icon name="play" size={12} /></span>}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ESCRITORIO: caso destacado (solo si ya publicaste casos) -->
+  {caso && (
+  <section class="section only-desktop">
+    <div class="container">
+      <div class="head" data-reveal>
+        <div><span class="eyebrow">03 — Caso destacado</span><h2 class="h2">{caso.titulo}</h2></div>
+        <span class="mono">{[caso.cliente, caso.ciudad, caso.tipo].filter(Boolean).join(' · ')}</span>
+      </div>
+      <div class="case-grid">
+        <div class="media case-main" data-clip>
+          <Media name={caso.foto} alt={`${caso.titulo} — ${caso.tipo}`} sizes="(max-width: 1200px) 66vw, 900px" />
+          {caso.video && <span class="play play-accent" style="color:var(--accent-ink)"><Icon name="play" size={16} /></span>}
+        </div>
+        <div class="case-side" data-stagger>
+          {caso.detalles.map((d, i) => <div class="media"><Media name={d} alt={`Detalle ${i + 1} de ${caso.titulo}`} sizes="420px" /></div>)}
+        </div>
+      </div>
+      <div class="case-text" data-stagger>
+        <div><span class="eyebrow">El reto</span><p>{caso.reto}</p></div>
+        <div><span class="eyebrow">Lo que hice</span><p>{caso.hice}</p></div>
+        <div><span class="eyebrow">El resultado</span><p class="result">{caso.resultado}</p></div>
+      </div>
+      <a href="/casos/" class="link" style="display:inline-block;margin-top:36px">Ver todos los casos →</a>
+    </div>
+  </section>
+  )}
+
+  <!-- MÓVIL: mi trabajo con selector -->
+  <section class="only-mobile m-work">
+    <div class="container">
+      <div class="m-head">
+        <h2 class="h3">Mi trabajo</h2>
+        <a href="/portafolio/" class="link-accent">Ver todo →</a>
+      </div>
+      <div class="segmented" role="tablist" aria-label="Tipo de trabajo" data-tabs>
+        <button role="tab" aria-selected="true" data-tab="foto">Fotografía</button>
+        <button role="tab" aria-selected="false" data-tab="aire">Aéreo y FPV</button>
+      </div>
+      <div class="m-grid" data-panel="foto" data-stagger>
+        {foto.map((p) => (
+          <a href="/portafolio/" class="media"><Media name={p.foto} alt={p.alt} sizes="50vw" /><span class="tag">{p.tema}</span></a>
+        ))}
+      </div>
+      <div class="m-grid" data-panel="aire" hidden>
+        {aire.map((p) => (
+          <a href="/portafolio/?linea=aire" class="media"><Media name={p.foto} alt={p.alt} sizes="50vw" /><span class="tag">{p.tema}</span>
+            {p.esVideo && <span class="play accent" style="width:30px;height:30px;top:8px;right:8px"><Icon name="play" size={10} /></span>}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <nav class="only-mobile m-links" aria-label="Secciones">
+    <div class="container" data-stagger>
+      <a href="/servicios/"><span><strong>Servicios</strong><small>Fotografía, aéreo, recorrido y acción FPV</small></span><Icon name="arrow" class="accent" /></a>
+      {HAS_CASES && <a href="/casos/"><span><strong>Casos</strong><small>Proyectos reales y sus resultados</small></span><Icon name="arrow" class="accent" /></a>}
+      <a href="/blog/"><span><strong>Blog</strong><small>Guías y consejos antes de tu sesión</small></span><Icon name="arrow" class="accent" /></a>
+      <a href="/contacto/"><span><strong>Contacto</strong><small>Cotiza tu proyecto en minutos</small></span><Icon name="arrow" class="accent" /></a>
+    </div>
+  </nav>
+
+  <!-- TESTIMONIO -->
+  {testimonio && (
+  <section class="quote">
+    <div class="container" data-reveal>
+      <svg width="40" height="32" viewBox="0 0 40 32" fill="#E9A23B" aria-hidden="true"><path d="M0 32V18C0 8 5 2 15 0l2 4c-6 2-8 6-8 10h7v18H0zm23 0V18c0-10 5-16 15-18l2 4c-6 2-8 6-8 10h7v18H23z" /></svg>
+      <blockquote>{testimonio.texto}</blockquote>
+      <span class="mono">{testimonio.autor}{testimonio.empresa && ` — ${testimonio.empresa}`}</span>
+    </div>
+  </section>
+  )}
+
+  <!-- CONTACTO (escritorio) -->
+  <section class="cta-band only-desktop">
+    <div class="container" data-reveal>
+      <div><span class="eyebrow">{caso ? '04' : '03'} — Contacto</span><h2 class="h2" style="margin-top:16px">¿Tienes un proyecto en <em>mente</em>?</h2></div>
+      <div class="actions">
+        <a href={waLink()} class="btn btn-primary" target="_blank" rel="noopener"><Icon name="chat" />WhatsApp</a>
+        <a href="/contacto/" class="btn btn-ghost">Ir a contacto</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { position: relative; height: 860px; max-height: 100svh; min-height: 640px; overflow: hidden; }
+  .hero-media { position: absolute; inset: 0; }
+  .hero-media :global(img), .hero-media :global(video), .hero-media :global(.ph) { width: 100%; height: 100%; object-fit: cover; }
+  .hero-media :global(.ph) { align-items: flex-start; padding-top: 22vh; }
+  .hero-shade { position: absolute; inset: 0; background: linear-gradient(180deg, #0B0C0Dcc 0%, #0B0C0D00 30%, #0B0C0D00 50%, #0B0C0D 100%); }
+  .corner { position: absolute; width: 36px; height: 36px; border-color: #ECE7DF80; border-style: solid; border-width: 0; }
+  .corner.tl { top: 130px; left: var(--gutter); border-top-width: 1.5px; border-left-width: 1.5px; }
+  .corner.tr { top: 130px; right: var(--gutter); border-top-width: 1.5px; border-right-width: 1.5px; }
+  .corner.bl { bottom: 56px; left: var(--gutter); border-bottom-width: 1.5px; border-left-width: 1.5px; }
+  .corner.br { bottom: 56px; right: var(--gutter); border-bottom-width: 1.5px; border-right-width: 1.5px; }
+  .hero-content { position: relative; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 28px; padding-bottom: 120px; }
+  .hero-content .h1 { font-size: clamp(50px, 8.4vw, 132px); max-width: 1080px; }
+  .hero-foot { display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-end; justify-content: space-between; }
+  .hero-foot .lead { font-size: 18px; max-width: 480px; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; }
+  .hero-ghost { border-color: #ECE7DF60; }
+
+  .mosaic { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: 300px; gap: 16px; }
+  .mosaic > a { display: block; text-decoration: none; }
+  .mosaic :global(img), .mosaic :global(.ph) { width: 100%; height: 100%; object-fit: cover; }
+  .big { grid-column: span 2; grid-row: span 2; }
+  .wide { grid-column: span 2; }
+  .tall { grid-row: span 2; }
+  .full { grid-column: 1 / -1; grid-row: span 2; }
+
+  .case-grid { display: flex; flex-wrap: wrap; gap: 16px; }
+  .case-main { flex: 999 1 640px; min-width: 0; height: 560px; }
+  .case-main :global(img), .case-main :global(.ph), .case-side :global(img), .case-side :global(.ph) { width: 100%; height: 100%; object-fit: cover; }
+  .case-side { flex: 1 1 300px; display: flex; flex-direction: column; gap: 16px; }
+  .case-side .media { flex: 1; min-height: 180px; }
+  .case-text { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 40px; margin-top: 48px; padding-top: 36px; border-top: 1px solid var(--line); }
+  .case-text p { margin: 10px 0 0; color: var(--muted); }
+  .case-text .result { font-family: var(--f-display); font-size: 30px; line-height: 1.15; color: var(--text); }
+
+  .quote { border-top: 1px solid var(--line); }
+  .quote .container { max-width: 1100px; padding-top: 130px; padding-bottom: 130px; text-align: center; }
+  .quote blockquote { margin: 32px 0; font-family: var(--f-display); font-size: clamp(26px, 3.6vw, 48px); line-height: 1.2; }
+
+  @media (max-width: 760px) {
+    .hero { height: 680px; min-height: 0; }
+    .corner.tl, .corner.tr { top: 92px; width: 24px; height: 24px; }
+    .hero-content { gap: 14px; padding-bottom: 28px; }
+    .hero-content .h1 { font-size: 50px; line-height: .98; }
+    .hero-foot { display: block; }
+    .hero-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .hero-actions .btn { padding: 0 12px; min-height: 54px; }
+
+    .m-work { padding-top: 40px; }
+    .m-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .m-head .h3 { font-size: 34px; }
+    .m-head a { min-height: 44px; display: flex; align-items: center; font-size: 14px; }
+    .m-work .segmented { margin-bottom: 14px; }
+    .m-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .m-grid[hidden] { display: none; }
+    .m-grid .media { height: 168px; border-radius: 8px; display: block; }
+    .m-grid :global(img), .m-grid :global(.ph) { width: 100%; height: 100%; object-fit: cover; }
+    .m-grid :global(.ph-label) { font-size: 9px; }
+    .m-grid .tag { left: 8px; bottom: 8px; font-size: 9px; padding: 5px 8px; }
+
+    .m-links .container { padding-top: 32px; padding-bottom: 8px; }
+    .m-links a { display: flex; align-items: center; gap: 14px; min-height: 68px; padding: 12px 0; border-bottom: 1px solid var(--line); text-decoration: none; }
+    .m-links a:first-child { border-top: 1px solid var(--line); }
+    .m-links span { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+    .m-links strong { font-family: var(--f-display); font-weight: 400; font-size: 24px; line-height: 1.1; }
+    .m-links small { font-size: 13px; color: var(--subtle); }
+
+    .quote { border-top: 0; }
+    .quote .container { padding-top: 32px; padding-bottom: 40px; text-align: left; }
+    .quote .container { background: none; }
+    .quote svg { width: 24px; height: 20px; }
+    .quote blockquote { margin: 12px 0 10px; font-size: 22px; }
+  }
+</style>
+
+<script>
+  // Selector Fotografía / Aéreo del inicio móvil
+  const tabs = document.querySelectorAll<HTMLButtonElement>('[data-tabs] [data-tab]');
+  tabs.forEach((t) => t.addEventListener('click', () => {
+    tabs.forEach((b) => b.setAttribute('aria-selected', String(b === t)));
+    document.querySelectorAll<HTMLElement>('[data-panel]').forEach((p) => { p.hidden = p.dataset.panel !== t.dataset.tab; });
+  }));
+</script>

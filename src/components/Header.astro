@@ -1,0 +1,56 @@
+---
+import Icon from './Icon.astro';
+import { SITE, NAV, waLink } from '../config';
+interface Props { overlay?: boolean }
+const { overlay = false } = Astro.props;
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => path === href || (href !== '/' && path.startsWith(href));
+---
+<header class:list={['site-header', { over: overlay }]}>
+  <div class="container bar">
+    <a href="/" class="brand" aria-label={`${SITE.brand} — inicio`}>
+      <Icon name="logo" size={26} />
+      <span>{SITE.brand}</span>
+    </a>
+    <nav class="nav" aria-label="Principal">
+      {NAV.map((n) => <a href={n.href} aria-current={isCurrent(n.href) ? 'page' : undefined}>{n.label}</a>)}
+    </nav>
+    <a href="/contacto/" class="btn btn-ghost btn-sm header-cta">Cotizar proyecto</a>
+    <button class="menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu" data-menu-open>
+      <Icon name="menu" size={18} />
+    </button>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Menú">
+  <div class="bar">
+    <a href="/" class="brand"><Icon name="logo" size={24} /><span style="font-size:22px">{SITE.brand}</span></a>
+    <button class="menu-btn" style="display:flex" type="button" aria-label="Cerrar menú" data-menu-close>
+      <Icon name="close" size={16} />
+    </button>
+  </div>
+  <nav aria-label="Principal móvil">
+    {NAV.map((n, i) => (
+      <a href={n.href} aria-current={isCurrent(n.href) ? 'page' : undefined}>{n.label}<span>{String(i + 1).padStart(2, '0')}</span></a>
+    ))}
+  </nav>
+  <div class="actions">
+    <a href="/contacto/" class="btn btn-primary btn-block">Cotizar proyecto</a>
+    <a href={waLink()} class="btn btn-ghost btn-block" target="_blank" rel="noopener"><Icon name="chat" size={20} class="accent" />WhatsApp</a>
+  </div>
+</div>
+
+<script>
+  const menu = document.getElementById('mobile-menu');
+  const openBtn = document.querySelector<HTMLButtonElement>('[data-menu-open]');
+  const closeBtn = document.querySelector<HTMLButtonElement>('[data-menu-close]');
+  const set = (open: boolean) => {
+    menu?.classList.toggle('open', open);
+    openBtn?.setAttribute('aria-expanded', String(open));
+    document.body.style.overflow = open ? 'hidden' : '';
+    if (open) closeBtn?.focus(); else openBtn?.focus();
+  };
+  openBtn?.addEventListener('click', () => set(true));
+  closeBtn?.addEventListener('click', () => set(false));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && menu?.classList.contains('open')) set(false); });
+</script>

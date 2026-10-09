@@ -1,0 +1,39 @@
+---
+// Muestra tu foto si existe en src/assets/fotos/. Si todavía no la subes,
+// muestra un marcador con la descripción.
+import { Image } from 'astro:assets';
+import { findImage } from '../lib/media';
+
+interface Props {
+  name?: string;
+  alt: string;
+  label?: string;
+  class?: string;
+  style?: string;
+  widths?: number[];
+  sizes?: string;
+  eager?: boolean;
+  attrs?: Record<string, string | boolean>;
+}
+
+const { name, alt, label, class: cls = '', style, widths = [480, 800, 1200, 1800], sizes = '(max-width: 760px) 100vw, 50vw', eager = false, attrs = {} } = Astro.props;
+const img = findImage(name);
+const ws = img ? [...new Set([...widths.filter((w) => w < img.width), img.width])] : [];
+---
+{img ? (
+  <Image
+    src={img}
+    alt={alt}
+    class={cls}
+    style={style}
+    widths={ws}
+    sizes={sizes}
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : 'auto'}
+    {...attrs}
+  />
+) : (
+  <span class={`ph ${cls}`} style={style} role="img" aria-label={alt} {...attrs}>
+    <span class="ph-label">{label ?? alt}</span>
+  </span>
+)}

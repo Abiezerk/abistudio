@@ -1,0 +1,19 @@
+[
+  { "foto": "", "descripcion": "Retrato de modelo en estudio con luz lateral", "linea": "Fotografía", "tema": "Modelaje", "youtube": "", "video": "", "inicio": true },
+  { "foto": "", "descripcion": "Fotografía de producto sobre fondo neutro", "linea": "Fotografía", "tema": "Comercial", "youtube": "", "video": "", "inicio": true },
+  { "foto": "", "descripcion": "Perro corriendo en la playa al atardecer", "linea": "Fotografía", "tema": "Mascotas", "youtube": "", "video": "", "inicio": true },
+  { "foto": "", "descripcion": "Montaña al amanecer con niebla", "linea": "Fotografía", "tema": "Paisajes", "youtube": "", "video": "", "inicio": true },
+  { "foto": "", "descripcion": "Modelo en exterior con luz natural", "linea": "Fotografía", "tema": "Modelaje", "youtube": "", "video": "", "inicio": false },
+  { "foto": "", "descripcion": "Retrato de gato en casa", "linea": "Fotografía", "tema": "Mascotas", "youtube": "", "video": "", "inicio": false },
+  { "foto": "", "descripcion": "Sesión para marca de ropa", "linea": "Fotografía", "tema": "Comercial", "youtube": "", "video": "", "inicio": false },
+  { "foto": "", "descripcion": "Costa al atardecer", "linea": "Fotografía", "tema": "Paisajes", "youtube": "", "video": "", "inicio": false },
+
+  { "foto": "", "descripcion": "Recorrido FPV por el interior de una casa", "linea": "Aéreo y FPV", "tema": "Recorridos FPV", "youtube": "", "video": "", "inicio": true },
+  { "foto": "", "descripcion": "Casa vista desde arriba con drone", "linea": "Aéreo y FPV", "tema": "Bienes raíces", "youtube": "", "video": "", "inicio": true },
+  { "foto": "", "descripcion": "Persecución FPV de auto en carretera", "linea": "Aéreo y FPV", "tema": "Acción FPV", "youtube": "", "video": "", "inicio": true },
+  { "foto": "", "descripcion": "Costa vista desde el aire", "linea": "Aéreo y FPV", "tema": "Paisajes aéreos", "youtube": "", "video": "", "inicio": true },
+  { "foto": "", "descripcion": "Recorrido FPV por un restaurante", "linea": "Aéreo y FPV", "tema": "Recorridos FPV", "youtube": "", "video": "", "inicio": false },
+  { "foto": "", "descripcion": "Terreno visto desde drone con sus colindancias", "linea": "Aéreo y FPV", "tema": "Bienes raíces", "youtube": "", "video": "", "inicio": false },
+  { "foto": "", "descripcion": "Moto en terracería grabada con drone FPV", "linea": "Aéreo y FPV", "tema": "Acción FPV", "youtube": "", "video": "", "inicio": false },
+  { "foto": "", "descripcion": "Bosque visto desde arriba", "linea": "Aéreo y FPV", "tema": "Paisajes aéreos", "youtube": "", "video": "", "inicio": false }
+]

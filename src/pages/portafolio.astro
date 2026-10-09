@@ -1,0 +1,230 @@
+---
+import Base from '../layouts/Base.astro';
+import Media from '../components/Media.astro';
+import Icon from '../components/Icon.astro';
+import { SITE, waLink } from '../config';
+import { PORTAFOLIO, TEMAS } from '../data/contenido';
+import { ratioOf } from '../lib/media';
+
+// Proporciones para los marcadores mientras no hay foto
+const FALLBACK = [1.25, 0.8, 1.1, 0.75, 1.35, 0.9];
+
+const lineas = ['foto', 'aire'] as const;
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: `Portafolio de fotografía, drone y FPV | ${SITE.brand}`,
+  description: 'Modelaje, producto, paisajes, mascotas, tomas aéreas y recorridos FPV.',
+};
+---
+<Base title="Portafolio" description={`Portafolio de fotografía de modelaje, producto, paisajes y mascotas, y tomas aéreas y FPV en ${SITE.city}.`} schema={schema}>
+  <section class="container intro">
+    <span class="eyebrow">Portafolio</span>
+    <div class="intro-row">
+      {lineas.map((l) => (
+        <h1 class="display h1" data-line-title={l} hidden={l !== 'foto'}>{TEMAS[l].titulo} <em>{TEMAS[l].acento}</em></h1>
+      ))}
+      {lineas.map((l) => <p class="lead" data-line-title={l} hidden={l !== 'foto'}>{TEMAS[l].desc}</p>)}
+    </div>
+
+    <div class="segmented" role="tablist" aria-label="Tipo de trabajo">
+      {lineas.map((l) => <button role="tab" aria-selected={l === 'foto' ? 'true' : 'false'} data-line={l}>{TEMAS[l].label}</button>)}
+    </div>
+
+    {lineas.map((l) => (
+      <div class="pills filters" role="group" aria-label={`Filtrar ${TEMAS[l].label}`} data-filters={l} hidden={l !== 'foto'}>
+        <button type="button" aria-pressed="true" data-tema="Todo">Todo</button>
+        {TEMAS[l].temas.map((t) => <button type="button" aria-pressed="false" data-tema={t}>{t}</button>)}
+      </div>
+    ))}
+  </section>
+
+  <section class="container grid-wrap">
+    <div class="masonry">
+      {PORTAFOLIO.map((p, i) => (
+        <button
+          type="button"
+          class="media zoom item"
+          style={`--r:${ratioOf(p.foto, FALLBACK[i % FALLBACK.length]).toFixed(3)}`}
+          data-linea={p.linea}
+          data-tema={p.tema}
+          data-youtube={p.youtube || undefined}
+          data-video={p.video || undefined}
+          data-alt={p.alt}
+          hidden={p.linea !== 'foto'}
+          aria-label={`Ver: ${p.alt}`}
+        >
+          <Media name={p.foto} alt={p.alt} sizes="(max-width: 760px) 50vw, 33vw" />
+          <span class="tag only-desktop">{p.tema}</span>
+          {p.esVideo && <span class="play accent"><Icon name="play" size={12} /></span>}
+        </button>
+      ))}
+    </div>
+    <p class="empty" data-empty hidden>Muy pronto habrá trabajos en esta categoría. Mientras tanto, <a href="/contacto/">cuéntame tu proyecto</a>.</p>
+  </section>
+
+  <section class="cta-band only-desktop">
+    <div class="container">
+      <h2 class="h2" style="max-width:720px;font-size:clamp(36px,4vw,56px)">¿Te gustó lo que viste? Hagamos algo así para ti.</h2>
+      <div class="actions">
+        <a href="/servicios/" class="btn btn-ghost">Ver servicios</a>
+        <a href="/contacto/" class="btn btn-primary">Cotizar</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Barra fija en móvil -->
+  <div class="sticky-bar only-mobile">
+    <a href="/contacto/" class="btn btn-primary">Cotizar</a>
+    <a href={waLink()} class="btn btn-ghost round" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp"><Icon name="chat" size={22} class="accent" /></a>
+  </div>
+
+  <!-- Visor -->
+  <dialog class="viewer" aria-label="Vista ampliada">
+    <div class="viewer-top">
+      <span class="mono" data-count></span>
+      <button type="button" class="icon-btn" data-close aria-label="Cerrar"><Icon name="close" size={18} /></button>
+    </div>
+    <div class="viewer-body">
+      <button type="button" class="icon-btn nav-btn" data-prev aria-label="Anterior"><Icon name="prev" size={18} /></button>
+      <div class="viewer-stage" data-stage></div>
+      <button type="button" class="icon-btn nav-btn" data-next aria-label="Siguiente"><Icon name="next" size={18} /></button>
+    </div>
+    <p class="viewer-caption" data-caption></p>
+  </dialog>
+</Base>
+
+<style>
+  .intro { padding-top: 88px; padding-bottom: 40px; }
+  .intro-row { display: flex; flex-wrap: wrap; gap: 24px 32px; align-items: flex-end; justify-content: space-between; margin: 20px 0 48px; }
+  .intro-row [hidden] { display: none; }
+  .filters { margin-top: 24px; }
+  .filters[hidden] { display: none; }
+
+  .grid-wrap { padding-bottom: 80px; }
+  .masonry { columns: 3 320px; column-gap: 20px; }
+  .item { display: block; width: 100%; aspect-ratio: 1 / var(--r); margin: 0 0 20px; break-inside: avoid; border: 0; padding: 0; cursor: zoom-in; color: inherit; }
+  .item[hidden] { display: none; }
+  .empty { color: var(--muted); padding: 40px 0 80px; }
+  .empty[hidden] { display: none; }
+  .item :global(img), .item :global(.ph) { width: 100%; height: 100%; object-fit: cover; }
+
+  .sticky-bar { position: sticky; bottom: 0; z-index: 10; padding: 14px var(--gutter) 24px; gap: 10px; background: linear-gradient(180deg, #0B0C0D00 0%, #0B0C0DE6 30%, #0B0C0D 100%); }
+  .sticky-bar.only-mobile { display: none !important; }
+  .round { width: 56px; min-height: 56px; padding: 0; flex: none; background: var(--bg-2); }
+
+  .viewer { width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; border: 0; padding: 24px var(--gutter) 28px; background: #050606F2; color: var(--text); flex-direction: column; gap: 16px; }
+  .viewer[open] { display: flex; }
+  .viewer::backdrop { background: transparent; }
+  .viewer-top { display: flex; justify-content: space-between; align-items: center; }
+  .viewer-body { flex: 1; min-height: 0; display: flex; align-items: center; gap: 20px; }
+  .viewer-stage { flex: 1; height: 100%; display: flex; align-items: center; justify-content: center; }
+  .viewer-stage :global(video) { max-width: 100%; max-height: 100%; border-radius: 4px; }
+  .viewer-stage :global(img) { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px; }
+  .viewer-stage :global(iframe) { width: 100%; aspect-ratio: 16 / 9; max-height: 100%; border: 0; border-radius: 4px; }
+  .viewer-stage :global(.ph) { width: 100%; height: 100%; border-radius: 4px; }
+  .viewer-caption { margin: 0; font-family: var(--f-display); font-size: 26px; }
+  .icon-btn { width: 52px; height: 52px; border-radius: 50%; border: 1px solid #3A3D40; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; flex: none; }
+
+  @media (max-width: 760px) {
+    .intro { padding-top: 24px; padding-bottom: 20px; }
+    .intro-row { margin: 8px 0 20px; display: block; }
+    .intro-row .h1 { font-size: 46px; margin-bottom: 8px; }
+    .filters { margin-top: 16px; }
+    .masonry { columns: 2; column-gap: 10px; }
+    .item { margin-bottom: 10px; border-radius: 6px; }
+    .item :global(.ph-label) { font-size: 9px; }
+    .item .play { width: 28px; height: 28px; top: 8px; right: 8px; }
+    .grid-wrap { padding-bottom: 24px; }
+    .sticky-bar.only-mobile { display: flex !important; }
+    .sticky-bar .btn-primary { flex: 1; min-height: 56px; }
+    .viewer { padding: 12px 12px 24px; }
+    .viewer-body { flex-direction: column; }
+    .viewer-body .nav-btn { display: none; }
+  }
+</style>
+
+<script>
+  const items = Array.from(document.querySelectorAll<HTMLButtonElement>('.item'));
+  const lineBtns = document.querySelectorAll<HTMLButtonElement>('[data-line]');
+  let linea = new URLSearchParams(location.search).get('linea') === 'aire' ? 'aire' : 'foto';
+  let tema = 'Todo';
+
+  function render() {
+    lineBtns.forEach((b) => b.setAttribute('aria-selected', String(b.dataset.line === linea)));
+    document.querySelectorAll<HTMLElement>('[data-line-title]').forEach((el) => (el.hidden = el.dataset.lineTitle !== linea));
+    document.querySelectorAll<HTMLElement>('[data-filters]').forEach((el) => {
+      el.hidden = el.dataset.filters !== linea;
+      el.querySelectorAll<HTMLButtonElement>('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tema === tema)));
+    });
+    let i = 0;
+    let shown = 0;
+    items.forEach((it) => {
+      const show = it.dataset.linea === linea && (tema === 'Todo' || it.dataset.tema === tema);
+      it.hidden = !show;
+      if (show) shown++;
+      if (show) { it.style.animation = 'none'; void it.offsetWidth; it.style.animation = `fadeUp .7s cubic-bezier(.2,.7,.2,1) ${Math.min(i++, 8) * 60}ms both`; }
+    });
+    const empty = document.querySelector<HTMLElement>('[data-empty]');
+    if (empty) empty.hidden = shown > 0;
+  }
+  lineBtns.forEach((b) => b.addEventListener('click', () => {
+    linea = b.dataset.line!; tema = 'Todo';
+    history.replaceState(null, '', linea === 'aire' ? '?linea=aire' : location.pathname);
+    render();
+  }));
+  document.querySelectorAll<HTMLButtonElement>('[data-filters] button').forEach((b) => b.addEventListener('click', () => { tema = b.dataset.tema!; render(); }));
+  render();
+
+  // Visor de fotos y videos
+  const dlg = document.querySelector<HTMLDialogElement>('.viewer')!;
+  const stage = dlg.querySelector<HTMLElement>('[data-stage]')!;
+  const caption = dlg.querySelector<HTMLElement>('[data-caption]')!;
+  const count = dlg.querySelector<HTMLElement>('[data-count]')!;
+  let current = 0;
+  const visible = () => items.filter((it) => !it.hidden);
+
+  function show(i: number) {
+    const list = visible();
+    current = (i + list.length) % list.length;
+    const it = list[current];
+    stage.innerHTML = '';
+    const yt = it.dataset.youtube;
+    const mp4 = it.dataset.video;
+    if (mp4) {
+      const v = document.createElement('video');
+      v.src = mp4; v.controls = true; v.autoplay = true; v.playsInline = true;
+      stage.appendChild(v);
+    } else if (yt) {
+      const f = document.createElement('iframe');
+      f.src = `https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&rel=0`;
+      f.title = it.dataset.alt || 'Video';
+      f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      stage.appendChild(f);
+    } else {
+      const img = it.querySelector('img');
+      if (img) {
+        const big = new Image();
+        big.src = img.currentSrc || img.src;
+        if (img.srcset) { big.srcset = img.srcset; big.sizes = '100vw'; }
+        big.alt = img.alt;
+        stage.appendChild(big);
+      } else {
+        const ph = it.querySelector('.ph')?.cloneNode(true);
+        if (ph) stage.appendChild(ph);
+      }
+    }
+    caption.textContent = it.dataset.alt || '';
+    count.textContent = `${current + 1} / ${list.length}`;
+  }
+  items.forEach((it) => it.addEventListener('click', () => { show(visible().indexOf(it)); dlg.showModal(); }));
+  dlg.querySelector('[data-close]')!.addEventListener('click', () => dlg.close());
+  dlg.querySelector('[data-prev]')!.addEventListener('click', () => show(current - 1));
+  dlg.querySelector('[data-next]')!.addEventListener('click', () => show(current + 1));
+  dlg.addEventListener('close', () => (stage.innerHTML = ''));
+  dlg.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') show(current + 1); if (e.key === 'ArrowLeft') show(current - 1); });
+  // Deslizar con el dedo en el visor
+  let x0 = 0;
+  stage.addEventListener('touchstart', (e) => (x0 = e.touches[0].clientX), { passive: true });
+  stage.addEventListener('touchend', (e) => { const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1)); });
+</script>
