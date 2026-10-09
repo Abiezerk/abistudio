@@ -1,5 +1,7 @@
 {
   "marca": "Abi Studio",
+  "logo": "/src/assets/fotos/logoabistudio.jpeg",
+  "mostrar_nombre": true,
   "descripcion": "Fotografía de modelaje, producto, paisajes y mascotas, y tomas aéreas con drone y recorridos FPV en Tijuana.",
   "ciudad": "Tijuana",
   "zona": "Tijuana y alrededores",
