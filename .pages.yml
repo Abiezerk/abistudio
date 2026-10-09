@@ -267,6 +267,17 @@ content:
       - name: marca
         label: Nombre de la marca
         type: string
+      - name: logo
+        label: Logo
+        type: image
+        description: PNG con fondo transparente o SVG, en color claro (la web es oscura). De preferencia horizontal.
+        options:
+          media: fotos
+      - name: mostrar_nombre
+        label: Mostrar el nombre junto al logo
+        type: boolean
+        default: true
+        description: Apágalo si tu logo ya incluye el nombre "Abi Studio".
       - name: descripcion
         label: Descripción para Google
         type: text

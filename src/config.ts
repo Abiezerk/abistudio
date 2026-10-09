@@ -19,6 +19,8 @@ export const SITE = {
   email: sitio.correo,
   social: { instagram: sitio.instagram, youtube: sitio.youtube, tiktok: sitio.tiktok },
   web3formsKey: sitio.web3forms,
+  logo: (sitio as any).logo || '',
+  showName: (sitio as any).mostrar_nombre !== false,
   heroImage: sitio.portada_foto,
   heroVideo: sitio.portada_video,
 };

@@ -1,5 +1,6 @@
 ---
 import Icon from './Icon.astro';
+import Logo from './Logo.astro';
 import { SITE, NAV, waLink } from '../config';
 interface Props { overlay?: boolean }
 const { overlay = false } = Astro.props;
@@ -9,8 +10,7 @@ const isCurrent = (href: string) => path === href || (href !== '/' && path.start
 <header class:list={['site-header', { over: overlay }]}>
   <div class="container bar">
     <a href="/" class="brand" aria-label={`${SITE.brand} — inicio`}>
-      <Icon name="logo" size={26} />
-      <span>{SITE.brand}</span>
+      <Logo />
     </a>
     <nav class="nav" aria-label="Principal">
       {NAV.map((n) => <a href={n.href} aria-current={isCurrent(n.href) ? 'page' : undefined}>{n.label}</a>)}
@@ -24,7 +24,7 @@ const isCurrent = (href: string) => path === href || (href !== '/' && path.start
 
 <div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Menú">
   <div class="bar">
-    <a href="/" class="brand"><Icon name="logo" size={24} /><span style="font-size:22px">{SITE.brand}</span></a>
+    <a href="/" class="brand"><Logo size="sm" /></a>
     <button class="menu-btn" style="display:flex" type="button" aria-label="Cerrar menú" data-menu-close>
       <Icon name="close" size={16} />
     </button>

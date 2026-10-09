@@ -3,7 +3,7 @@
 // (este último es el formato que guarda el panel al subir una foto).
 import type { ImageMetadata } from 'astro';
 
-const files = import.meta.glob<{ default: ImageMetadata }>('/src/assets/fotos/**/*.{jpg,jpeg,png,webp,avif,JPG,JPEG,PNG,WEBP}', { eager: true });
+const files = import.meta.glob<{ default: ImageMetadata }>('/src/assets/fotos/**/*.{jpg,jpeg,png,webp,avif,svg,JPG,JPEG,PNG,WEBP,SVG}', { eager: true });
 
 const base = (p: string) => (p.split('/').pop() || '').replace(/\.[^.]+$/, '').toLowerCase();
 

@@ -1,0 +1,37 @@
+---
+// Logo del encabezado. Se cambia desde el panel → "Datos del sitio" → "Logo".
+// Si no hay logo subido, se muestra el ícono de mira con el nombre de la marca.
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { SITE } from '../config';
+import { findImage } from '../lib/media';
+
+interface Props { size?: 'md' | 'sm' }
+const { size = 'md' } = Astro.props;
+const img = findImage(SITE.logo);
+const isSvg = !!img && /\.svg(\?|$)/i.test((img as any).src || '');
+const h = size === 'md' ? 34 : 30;
+---
+<span class:list={['logo', size]}>
+  {img ? (
+    isSvg ? (
+      <img src={(img as any).src} alt={SITE.brand} height={h} style={`height:${h}px;width:auto`} />
+    ) : (
+      <Image src={img} alt={SITE.brand} height={h * 2} densities={[1]} style={`height:${h}px;width:auto`} loading="eager" />
+    )
+  ) : (
+    <Icon name="logo" size={size === 'md' ? 26 : 24} />
+  )}
+  {(!img || SITE.showName) && <span class="logo-name">{SITE.brand}</span>}
+</span>
+
+<style>
+  .logo { display: inline-flex; align-items: center; gap: 12px; }
+  .logo img { display: block; max-width: 220px; object-fit: contain; }
+  .logo-name { font-family: var(--f-display); font-size: 26px; line-height: 1; }
+  .sm .logo-name { font-size: 22px; }
+  @media (max-width: 960px) {
+    .logo-name { font-size: 22px; }
+    .logo img { max-width: 170px; height: 28px !important; }
+  }
+</style>
